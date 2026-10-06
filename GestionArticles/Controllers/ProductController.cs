@@ -1,11 +1,15 @@
 ﻿using GestionArticles.Models;
 using GestionArticles.Models.Repositories;
 using GestionArticles.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GestionArticles.Controllers
 {
+   
+    //[Authorize(Roles = "Admin,Manager")]
+
     public class ProductController : Controller
     {
         readonly IProductRepository ProductRepository;
@@ -23,11 +27,15 @@ namespace GestionArticles.Controllers
         }
 
         // GET: ProductController
+
+        [AllowAnonymous]
         public ActionResult Index()
         {
             var products = ProductRepository.GetAll();
             return View(products);
         }
+
+        [AllowAnonymous]
 
         // GET: ProductController/Details/5
         public ActionResult Details(int id)
@@ -40,6 +48,9 @@ namespace GestionArticles.Controllers
             return View(product);
         }
 
+
+        [Authorize(Roles = "Admin,Manager")]
+
         // GET: ProductController/Create
         public ActionResult Create()
         {
@@ -51,6 +62,8 @@ namespace GestionArticles.Controllers
 
             return View();
         }
+
+        [Authorize(Roles = "Admin,Manager")]
 
         // POST: ProductController/Create
         [HttpPost]
@@ -118,6 +131,8 @@ namespace GestionArticles.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Admin,Manager")]
+
         // GET: ProductController/Edit/5
         public ActionResult Edit(int id)
         {
@@ -137,6 +152,8 @@ namespace GestionArticles.Controllers
             };
             return View(productEditViewModel);
         }
+
+        [Authorize(Roles = "Admin,Manager")]
 
         // POST: ProductController/Edit/5
         [HttpPost]
@@ -200,6 +217,8 @@ namespace GestionArticles.Controllers
             return uniqueFileName;
         }
 
+        [Authorize(Roles = "Admin,Manager")]
+
         // GET: ProductController/Delete/5
         public ActionResult Delete(int id)
         {
@@ -211,6 +230,8 @@ namespace GestionArticles.Controllers
             return View(product);
         }
 
+        [Authorize(Roles = "Admin,Manager")]
+
         // POST: ProductController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -221,7 +242,9 @@ namespace GestionArticles.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-       //search
+        [AllowAnonymous]
+
+        //search
 
         public ActionResult Search(string val)
         {

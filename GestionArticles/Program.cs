@@ -1,5 +1,6 @@
 using GestionArticles.Models;
 using GestionArticles.Models.Repositories;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,11 +9,41 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContextPool<AppDbContext>(options =>
-options.UseSqlServer(builder.Configuration.GetConnectionString("ProductDBConnection"
-)));
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("ProductDBConnection")
+    )
+);
 
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+
+/*
+
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<AppDbContext>();
+
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    // Default Password settings
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+});
+*/
+
+
+
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+{
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+})
+.AddEntityFrameworkStores<AppDbContext>()
+.AddDefaultTokenProviders();   // ← important
+
+// Cette ligne force l’ajout des rôles dans le cookie
+builder.Services.AddScoped<IUserClaimsPrincipalFactory<IdentityUser>,
+    UserClaimsPrincipalFactory<IdentityUser, IdentityRole>>();
+
 
 var app = builder.Build();
 
@@ -27,7 +58,10 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();
+
 app.UseAuthorization();
+
 
 app.MapStaticAssets();
 

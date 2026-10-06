@@ -2,7 +2,11 @@
 @{
     ViewData["Title"] = "Liste des produits";
 }
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
 <div class="card-group">
+    
     @foreach (var product in Model)
     {
         var photoPath = "~/images/" + (product.Image ?? "noimage.jpg");

@@ -1,9 +1,12 @@
 ﻿using GestionArticles.Models;
 using GestionArticles.Models.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GestionArticles.Controllers
 {
+    
+    [Authorize(Roles = "Admin,Manager")]
     public class CategoryController : Controller
     {
         readonly ICategoryRepository CategRepository;
@@ -16,6 +19,7 @@ namespace GestionArticles.Controllers
         }
 
         // GET: CategoryController
+        [AllowAnonymous]
         public ActionResult Index()
         {
             var categories = CategRepository.GetAll();

@@ -1,6 +1,7 @@
 using GestionArticles.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Linq;
 
 namespace GestionArticles.Controllers
 {
@@ -20,6 +21,15 @@ namespace GestionArticles.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public IActionResult DebugClaims()
+        {
+            var claims = User.Claims
+                .Select(c => $"{c.Type} ===> {c.Value}")
+                .ToList();
+
+            return Content(string.Join("<br>", claims));
         }
     }
 }
